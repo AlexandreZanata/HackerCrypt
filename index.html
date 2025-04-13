@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografador Hacker</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel para JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Fonte Hacker -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <style>
+        /* Tema Hacker/Tecnológico */
+        :root {
+            --primary: #00ff00; /* Verde hacker */
+            --primary-light: #33ff33;
+            --primary-dark: #00cc00;
+            --secondary: #0066ff; /* Azul tecnológico */
+            --secondary-light: #3399ff;
+            --dark: #0a0a0a; /* Preto quase puro */
+            --light: #e0e0e0; /* Cinza claro */
+            --accent: #ff00ff; /* Roxo neon */
+            --accent-light: #ff33ff;
+            --danger: #ff0033; /* Vermelho alerta */
+            --danger-light: #ff3366;
+        }
+
+        body {
+            background-color: var(--dark);
+            background-image:
+                linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--light);
+            min-height: 100vh;
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        .card {
+            background-color: rgba(10, 10, 10, 0.9);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-primary {
+            background-color: transparent;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--secondary);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid var(--secondary);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 102, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+            text-shadow: 0 0 5px var(--secondary);
+        }
+
+        .btn-accent {
+            background-color: transparent;
+            color: var(--accent);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid var(--accent);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .btn-accent:hover {
+            background-color: rgba(255, 0, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+            text-shadow: 0 0 5px var(--accent);
+        }
+
+        .text-primary {
+            color: var(--primary);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .text-secondary {
+            color: var(--secondary);
+            text-shadow: 0 0 5px var(--secondary);
+        }
+
+        .border-light {
+            border-color: rgba(0, 255, 0, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Efeito de terminal no cabeçalho */
+        .header-gradient {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header-gradient::after {
+            content: '|';
+            animation: blink 1s infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Estilo para os cards de método */
+        .method-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .method-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Animação de pulsação para o botão de ação */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); text-shadow: 0 0 10px var(--primary); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse:hover {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Estilo personalizado para textareas */
+        .custom-textarea {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--primary);
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        .custom-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.1);
+            outline: none;
+        }
+
+        /* Estilo para o seletor de método */
+        .method-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2300ff00' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            appearance: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--primary);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        /* Efeito de digitação */
+        .typing-effect {
+            border-right: 2px solid var(--primary);
+            animation: blink 1s infinite;
+        }
+
+        /* Efeito de glitch */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch::before {
+            color: #0ff;
+            z-index: -1;
+            animation: glitch-effect 3s infinite;
+        }
+
+        .glitch::after {
+            color: #f0f;
+            z-index: -2;
+            animation: glitch-effect 2s infinite reverse;
+        }
+
+        @keyframes glitch-effect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Efeito de terminal */
+        .terminal {
+            position: relative;
+        }
+
+        .terminal::before {
+            content: '>';
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            color: var(--primary);
+        }
+
+        .terminal-input {
+            padding-left: 20px;
+        }
+
+        /* Efeito de matrix */
+        @keyframes matrix {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: -500px 1000px, -300px 600px, 0 400px; }
+        }
+
+        .matrix-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: matrix 100s linear infinite;
+        }
+
+        /* Barra de progresso estilo hacker */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 5px;
+            background: rgba(0, 255, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px var(--primary);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="matrix-effect"></div>
+
+    <div id="root" class="container mx-auto px-4 py-8 max-w-4xl relative"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Dicionário de Código Morse
+        const morseCode = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.',
+            'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---',
+            'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---',
+            'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-',
+            'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--',
+            'Z': '--..', '0': '-----', '1': '.----', '2': '..---', '3': '...--',
+            '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..',
+            '9': '----.', '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.',
+            '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...',
+            ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-',
+            '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.', ' ': '/'
+        };
+
+        // Dicionário inverso para descriptografia Morse
+        const reverseMorse = Object.fromEntries(
+            Object.entries(morseCode).map(([key, value]) => [value, key])
+        );
+
+        // Cifra de substituição hacker
+        const substitutionCipher = {
+            'A': '4', 'B': '8', 'C': '(', 'D': '|)', 'E': '3',
+            'F': '|=', 'G': '6', 'H': '#', 'I': '!', 'J': '_|',
+            'K': '|<', 'L': '1', 'M': '|\\/|', 'N': '|\\|', 'O': '0',
+            'P': '|D', 'Q': '(,)', 'R': '|2', 'S': '$', 'T': '7',
+            'U': '|_|', 'V': '\\/', 'W': '\\/\\/', 'X': '><', 'Y': '`/',
+            'Z': '2',
+            ' ': ' ', '!': '!!', '?': '?!', '.': '...'
+        };
+
+        // Dicionário inverso para substituição hacker
+        const reverseSubstitution = Object.fromEntries(
+            Object.entries(substitutionCipher).map(([key, value]) => [value, key])
+        );
+
+        const App = () => {
+            const [inputText, setInputText] = useState('');
+            const [outputText, setOutputText] = useState('');
+            const [method, setMethod] = useState('morse');
+            const [key, setKey] = useState('h4ck3rk3y');
+            const [shift, setShift] = useState(13);
+            const [isEncrypting, setIsEncrypting] = useState(true);
+            const [copied, setCopied] = useState(false);
+            const [error, setError] = useState('');
+            const [typing, setTyping] = useState(false);
+
+            // Limpa mensagens temporárias após 3 segundos
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    if (copied) setCopied(false);
+                    if (error) setError('');
+                }, 3000);
+                return () => clearTimeout(timer);
+            }, [copied, error]);
+
+            // Efeito de digitação
+            useEffect(() => {
+                if (outputText && outputText.length > 0) {
+                    setTyping(true);
+                    const timer = setTimeout(() => setTyping(false), 1000);
+                    return () => clearTimeout(timer);
+                }
+            }, [outputText]);
+
+            // Processa o texto com o método selecionado
+            const processText = () => {
+                try {
+                    let result = '';
+
+                    if (isEncrypting) {
+                        switch (method) {
+                            case 'morse':
+                                result = encryptMorse(inputText);
+                                break;
+                            case 'base64':
+                                result = btoa(unescape(encodeURIComponent(inputText)));
+                                break;
+                            case 'caesar':
+                                result = caesarCipher(inputText, shift);
+                                break;
+                            case 'hex':
+                                result = textToHex(inputText);
+                                break;
+                            case 'substitution':
+                                result = simpleSubstitution(inputText);
+                                break;
+                            case 'aes':
+                                encryptAES(inputText, key).then(encrypted => {
+                                    setOutputText(encrypted);
+                                }).catch(err => {
+                                    setError('ERRO: ' + err.message);
+                                });
+                                return;
+                            default:
+                                result = inputText;
+                        }
+                    } else {
+                        switch (method) {
+                            case 'morse':
+                                result = decryptMorse(inputText);
+                                break;
+                            case 'base64':
+                                result = decodeURIComponent(escape(atob(inputText)));
+                                break;
+                            case 'caesar':
+                                result = caesarCipher(inputText, -shift);
+                                break;
+                            case 'hex':
+                                result = hexToText(inputText);
+                                break;
+                            case 'substitution':
+                                result = reverseSimpleSubstitution(inputText);
+                                break;
+                            case 'aes':
+                                decryptAES(inputText, key).then(decrypted => {
+                                    setOutputText(decrypted);
+                                }).catch(err => {
+                                    setError('ERRO: ' + err.message);
+                                });
+                                return;
+                            default:
+                                result = inputText;
+                        }
+                    }
+
+                    setOutputText(result);
+                } catch (err) {
+                    setError(`ERRO: ${isEncrypting ? 'CRIPTOGRAFIA' : 'DESCRIPTOGRAFIA'} FALHOU - ${err.message}`);
+                }
+            };
+
+            // Criptografia Morse
+            const encryptMorse = (text) => {
+                return text.toUpperCase().split('').map(char => {
+                    return morseCode[char] || char;
+                }).join(' ');
+            };
+
+            // Descriptografia Morse
+            const decryptMorse = (text) => {
+                return text.split(' ').map(code => {
+                    return reverseMorse[code] || code;
+                }).join('');
+            };
+
+            // Cifra de César
+            const caesarCipher = (text, shiftAmount) => {
+                return text.split('').map(char => {
+                    if (/[a-z]/.test(char)) {
+                        const code = char.charCodeAt(0) - 97;
+                        return String.fromCharCode(((code + shiftAmount + 26) % 26) + 97);
+                    } else if (/[A-Z]/.test(char)) {
+                        const code = char.charCodeAt(0) - 65;
+                        return String.fromCharCode(((code + shiftAmount + 26) % 26) + 65);
+                    }
+                    return char;
+                }).join('');
+            };
+
+            // Conversão para Hexadecimal
+            const textToHex = (text) => {
+                return text.split('').map(char => {
+                    return char.charCodeAt(0).toString(16).padStart(2, '0');
+                }).join(' ');
+            };
+
+            // Conversão de Hexadecimal para texto
+            const hexToText = (hex) => {
+                return hex.split(' ').map(hexChar => {
+                    return String.fromCharCode(parseInt(hexChar, 16));
+                }).join('');
+            };
+
+            // Substituição hacker
+            const simpleSubstitution = (text) => {
+                return text.toUpperCase().split('').map(char => {
+                    return substitutionCipher[char] || char;
+                }).join('');
+            };
+
+            // Reversão da substituição hacker
+            const reverseSimpleSubstitution = (text) => {
+                const keys = Object.keys(reverseSubstitution).sort((a, b) => b.length - a.length);
+                let result = '';
+                let i = 0;
+
+                while (i < text.length) {
+                    let found = false;
+                    for (const key of keys) {
+                        if (text.startsWith(key, i)) {
+                            result += reverseSubstitution[key];
+                            i += key.length;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        result += text[i];
+                        i++;
+                    }
+                }
+
+                return result;
+            };
+
+            // Criptografia AES
+            const encryptAES = async (text, keyStr) => {
+                if (!text) return '';
+                if (!keyStr) throw new Error('CHAVE NECESSÁRIA');
+
+                try {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(text);
+
+                    // Deriva uma chave mais segura usando PBKDF2
+                    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+                    const keyMaterial = await window.crypto.subtle.importKey(
+                        'raw',
+                        encoder.encode(keyStr),
+                        { name: 'PBKDF2' },
+                        false,
+                        ['deriveKey']
+                    );
+
+                    const key = await window.crypto.subtle.deriveKey(
+                        {
+                            name: 'PBKDF2',
+                            salt: salt,
+                            iterations: 100000,
+                            hash: 'SHA-256'
+                        },
+                        keyMaterial,
+                        { name: 'AES-CBC', length: 256 },
+                        false,
+                        ['encrypt']
+                    );
+
+                    const iv = window.crypto.getRandomValues(new Uint8Array(16));
+                    const encrypted = await window.crypto.subtle.encrypt(
+                        { name: 'AES-CBC', iv },
+                        key,
+                        data
+                    );
+
+                    // Combina salt + iv + dados cifrados
+                    const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                    combined.set(salt, 0);
+                    combined.set(iv, salt.length);
+                    combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+                    return btoa(String.fromCharCode(...combined));
+                } catch (err) {
+                    console.error('ERRO AES:', err);
+                    throw new Error('FALHA NA CRIPTOGRAFIA');
+                }
+            };
+
+            // Descriptografia AES
+            const decryptAES = async (ciphertext, keyStr) => {
+                if (!ciphertext) return '';
+                if (!keyStr) throw new Error('CHAVE NECESSÁRIA');
+
+                try {
+                    const rawData = atob(ciphertext);
+                    const combined = new Uint8Array(rawData.length);
+                    for (let i = 0; i < rawData.length; i++) {
+                        combined[i] = rawData.charCodeAt(i);
+                    }
+
+                    // Extrai salt, iv e dados cifrados
+                    const salt = combined.slice(0, 16);
+                    const iv = combined.slice(16, 32);
+                    const encrypted = combined.slice(32);
+
+                    const encoder = new TextEncoder();
+
+                    // Deriva a mesma chave usada na criptografia
+                    const keyMaterial = await window.crypto.subtle.importKey(
+                        'raw',
+                        encoder.encode(keyStr),
+                        { name: 'PBKDF2' },
+                        false,
+                        ['deriveKey']
+                    );
+
+                    const key = await window.crypto.subtle.deriveKey(
+                        {
+                            name: 'PBKDF2',
+                            salt: salt,
+                            iterations: 100000,
+                            hash: 'SHA-256'
+                        },
+                        keyMaterial,
+                        { name: 'AES-CBC', length: 256 },
+                        false,
+                        ['decrypt']
+                    );
+
+                    const decrypted = await window.crypto.subtle.decrypt(
+                        { name: 'AES-CBC', iv },
+                        key,
+                        encrypted
+                    );
+
+                    return new TextDecoder().decode(decrypted);
+                } catch (err) {
+                    console.error('ERRO AES:', err);
+                    throw new Error('FALHA NA DESCRIPTOGRAFIA - CHAVE INCORRETA');
+                }
+            };
+
+            // Copiar para área de transferência
+            const copyToClipboard = () => {
+                navigator.clipboard.writeText(outputText).then(() => {
+                    setCopied(true);
+                }).catch(err => {
+                    setError('FALHA AO COPIAR: ' + err.message);
+                });
+            };
+
+            // Limpar todos os campos
+            const clearAll = () => {
+                setInputText('');
+                setOutputText('');
+                setError('');
+            };
+
+            return (
+                <div className="space-y-8">
+                    <header className="text-center">
+                        <h1 className="text-4xl font-bold mb-3 header-gradient glitch" data-text="H4CK3R CRYPT0">
+                            H4CK3R CRYPT0
+                        </h1>
+                        <p className="text-lg text-gray-400">
+                            {isEncrypting ? '>>> CRIPTOGRAFAR DADOS <<<' : '>>> DESCRIPTOGRAFAR DADOS <<<'}
+                        </p>
+                    </header>
+
+                    <div className="card rounded-xl p-6 space-y-6">
+                        {/* Modo de operação */}
+                        <div className="flex justify-center">
+                            <div className="inline-flex rounded-md border border-green-500 overflow-hidden">
+                                <button
+                                    onClick={() => setIsEncrypting(true)}
+                                    className={`px-6 py-3 text-sm font-medium transition-all ${
+                                        isEncrypting ? 'btn-primary' : 'bg-black text-gray-400 hover:bg-gray-900'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                        ENCRYPT
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={() => setIsEncrypting(false)}
+                                    className={`px-6 py-3 text-sm font-medium transition-all ${
+                                        !isEncrypting ? 'btn-primary' : 'bg-black text-gray-400 hover:bg-gray-900'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                        </svg>
+                                        DECRYPT
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Seleção de método */}
+                        <div className="space-y-2">
+                            <label htmlFor="method" className="block text-sm font-medium text-green-400">
+                                ALGORITMO: {isEncrypting ? 'CRIPTOGRAFIA' : 'DESCRIPTOGRAFIA'}
+                            </label>
+                            <select
+                                id="method"
+                                value={method}
+                                onChange={(e) => setMethod(e.target.value)}
+                                className="w-full p-3 rounded-lg method-select focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                            >
+                                <option value="morse">CODIGO MORSE</option>
+                                <option value="base64">BASE64</option>
+                                <option value="caesar">CIFRA DE CÉSAR (ROT13)</option>
+                                <option value="hex">HEXADECIMAL</option>
+                                <option value="substitution">SUBSTITUIÇÃO HACKER</option>
+                                <option value="aes">AES-256 (MILITAR)</option>
+                            </select>
+                        </div>
+
+                        {/* Parâmetros adicionais baseados no método */}
+                        {method === 'caesar' && (
+                            <div className="space-y-2">
+                                <label htmlFor="shift" className="block text-sm font-medium text-green-400">
+                                    ROTAÇÃO: {shift}
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="range"
+                                        id="shift"
+                                        value={shift}
+                                        onChange={(e) => setShift(parseInt(e.target.value) || 0)}
+                                        className="flex-1"
+                                        min="1"
+                                        max="25"
+                                    />
+                                    <span className="text-lg font-bold text-green-400 w-8 text-center">{shift}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {method === 'aes' && (
+                            <div className="space-y-2">
+                                <label htmlFor="key" className="block text-sm font-medium text-green-400">
+                                    CHAVE SECRETA
+                                </label>
+                                <div className="relative"> 
+                                    <input
+                                        type="password"
+                                        id="key"
+                                        value={key}
+                                        onChange={(e) => setKey(e.target.value)}
+                                        className="w-full p-3 rounded-lg custom-textarea" 
+                                        placeholder="INSIRA A CHAVE"
+                                    />
+                                    <button
+                                        onClick={() => document.getElementById('key').type = document.getElementById('key').type === 'password' ? 'text' : 'password'}
+                                        className="absolute right-3 top-3 text-gray-400 hover:text-green-400"
+                                        type="button"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-500">
+                                    {isEncrypting ?
+                                        '>>> GUARDE ESTA CHAVE PARA DESCRIPTOGRAFAR <<<' :
+                                        '>>> USE A MESMA CHAVE DA CRIPTOGRAFIA <<<'}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Área de entrada */}
+                        <div className="space-y-2">
+                            <label htmlFor="inputText" className="block text-sm font-medium text-green-400">
+                                {isEncrypting ? 'ENTRADA DE TEXTO' : 'DADOS CRIPTOGRAFADOS'}
+                            </label>
+                            <textarea
+                                id="inputText"
+                                value={inputText}
+                                onChange={(e) => setInputText(e.target.value)}
+                                className="w-full p-4 rounded-lg custom-textarea min-h-[150px]"
+                                placeholder={isEncrypting ?
+                                    "DIGITE O TEXTO PARA CRIPTOGRAFAR..." :
+                                    "COLE OS DADOS CRIPTOGRAFADOS AQUI..."}
+                            />
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={() => setInputText('')}
+                                    className="text-xs text-gray-500 hover:text-green-400 flex items-center gap-1"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    LIMPAR
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Botões de ação */}
+                        <div className="flex flex-wrap gap-4">
+                            <button
+                                onClick={processText}
+                                className="flex-1 px-6 py-3 btn-primary rounded-lg font-medium flex items-center justify-center gap-2 pulse"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                {isEncrypting ? 'CRIPTOGRAFAR' : 'DESCRIPTOGRAFAR'}
+                            </button>
+                            <button
+                                onClick={clearAll}
+                                className="flex-1 px-6 py-3 bg-black hover:bg-gray-900 text-gray-400 rounded-lg font-medium flex items-center justify-center gap-2 border border-gray-700"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                LIMPAR TUDO
+                            </button>
+                        </div>
+
+                        {/* Área de saída */}
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <label htmlFor="outputText" className="block text-sm font-medium text-green-400">
+                                    RESULTADO
+                                </label>
+                                {outputText && (
+                                    <button
+                                        onClick={copyToClipboard}
+                                        className="text-sm flex items-center gap-2 bg-black hover:bg-gray-900 px-3 py-1.5 rounded-lg text-gray-400 transition-all border border-gray-700"
+                                    >
+                                        {copied ? (
+                                            <span className="flex items-center gap-1 text-green-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                COPIADO!
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                                </svg>
+                                                COPIAR
+                                            </span>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                            <textarea
+                                id="outputText"
+                                value={outputText}
+                                readOnly
+                                className={`w-full p-4 rounded-lg custom-textarea min-h-[150px] ${typing ? 'typing-effect' : ''}`}
+                                placeholder="RESULTADO SERÁ EXIBIDO AQUI..."
+                            />
+                        </div>
+
+                        {/* Mensagens de status */}
+                        {error && (
+                            <div className="fade-in p-4 bg-black border border-red-500 rounded-lg text-red-400 flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                    <h4 className="font-medium">ERRO DE SISTEMA</h4>
+                                    <p className="text-sm">{error}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Informações sobre o método selecionado */}
+                        <div className="p-4 bg-black rounded-lg border border-green-500 method-card">
+                            <h3 className="font-medium text-green-400 mb-2 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                INFO: {getMethodName(method)}
+                            </h3>
+                            <p className="text-sm text-gray-400">
+                                {getMethodDescription(method, isEncrypting)}
+                            </p>
+                        </div>
+                    </div>
+
+                    <footer className="text-center text-gray-500 text-sm mt-8">
+                        <p className="text-xs"> SISTEMA DE CRIPTOGRAFIA H4CK3R - PROCESSAMENTO LOCAL</p>
+                        <p className="text-xs mt-1 text-green-400">v1.3.3.7 - ACCESS GRANTED | <a href="https://github.com/AlexandreZanata" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">GitHub</a></p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Helper para obter o nome do método
+        const getMethodName = (method) => {
+            switch (method) {
+                case 'morse': return 'CODIGO MORSE';
+                case 'base64': return 'BASE64';
+                case 'caesar': return 'CIFRA DE CÉSAR';
+                case 'hex': return 'HEXADECIMAL';
+                case 'substitution': return 'SUBSTITUIÇÃO HACKER';
+                case 'aes': return 'AES-256 (MILITAR)';
+                default: return '';
+            }
+        };
+
+        // Helper para obter a descrição do método
+        const getMethodDescription = (method, isEncrypting) => {
+            switch (method) {
+                case 'morse':
+                    return isEncrypting ?
+                        'CONVERTE CARACTERES EM CÓDIGO MORSE (EX: "SOS" → "... --- ...")' :
+                        'DECODIFICA CÓDIGO MORSE PARA TEXTO (EX: "... --- ..." → "SOS")';
+                case 'base64':
+                    return isEncrypting ?
+                        'CODIFICA TEXTO EM BASE64 - PADRÃO PARA TRANSFERÊNCIA DE DADOS' :
+                        'DECODIFICA BASE64 PARA TEXTO ORIGINAL';
+                case 'caesar':
+                    return isEncrypting ?
+                        `ROTACIONA CADA LETRA EM ${document.getElementById('shift')?.value || 13} POSIÇÕES (EX: "ABC" → "NOP")` :
+                        `REVERTE ROTAÇÃO DE ${document.getElementById('shift')?.value || 13} POSIÇÕES (EX: "NOP" → "ABC")`;
+                case 'hex':
+                    return isEncrypting ?
+                        'CONVERTE TEXTO PARA HEXADECIMAL (EX: "A" → "41")' :
+                        'CONVERTE HEXADECIMAL PARA TEXTO (EX: "41" → "A")';
+                case 'substitution':
+                    return isEncrypting ?
+                        'SUBSTITUI LETRAS POR SÍMBOLOS HACKER (EX: "A" → "4", "B" → "8")' :
+                        'REVERTE SUBSTITUIÇÃO HACKER (EX: "4" → "A", "8" → "B")';
+                case 'aes':
+                    return isEncrypting ?
+                        'CRIPTOGRAFIA AVANÇADA AES-256 - PADRÃO MILITAR - NECESSÁRIO CHAVE PARA DECRIPTAR' :
+                        'DESCRIPTOGRAFIA AES-256 - INSIRA A MESMA CHAVE USADA NA CRIPTOGRAFIA';
+                default:
+                    return '';
+            }
+        };
+
+        // Renderiza o aplicativo
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
