@@ -54,10 +54,6 @@ For AES-256, make sure to save your encryption key as it's required for decrypti
 - All processing happens in the browser
 - AES implementation uses Web Crypto API
 
-## Screenshot
-
-![Screenshot of the application](screenshot.png)
-
 ## License
 
 MIT License - Free for personal and commercial use
@@ -111,10 +107,6 @@ Para AES-256, certifique-se de guardar sua chave pois ela será necessária para
 - Inclui animações e efeitos customizados
 - Todo o processamento ocorre no navegador
 - Implementação AES usa Web Crypto API
-
-## Captura de Tela
-
-![Captura de tela da aplicação](screenshot.png)
 
 ## Licença
 
